@@ -9,12 +9,7 @@ import { radioAPI } from '@/lib/radioApi';
 const Globe = dynamic(() => import('react-globe.gl'), { 
   ssr: false,
   loading: () => (
-    <div className="w-full h-full flex items-center justify-center bg-gray-900">
-      <div className="text-center">
-        <div className="w-8 h-8 border-2 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <div className="text-white text-lg">Loading Globe...</div>
-      </div>
-    </div>
+    <></>
   )
 }) as any;
 
