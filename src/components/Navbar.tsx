@@ -7,9 +7,10 @@ import { getCountryFlag } from '@/utils/countryFlags';
 
 interface NavbarProps {
   pomodoro: ReturnType<typeof usePomodoro>;
+  pomodoroEnabled: boolean;
 }
 
-export function Navbar({ pomodoro }: NavbarProps) {
+export function Navbar({ pomodoro, pomodoroEnabled }: NavbarProps) {
   const [showTooltip, setShowTooltip] = useState(false);
 
   const getPhaseDisplay = () => {
@@ -28,54 +29,60 @@ export function Navbar({ pomodoro }: NavbarProps) {
   const phaseInfo = getPhaseDisplay();
 
   return (
-    <nav className="relative z-50 bg-black/20 backdrop-blur-sm py-6 min-h-12 flex items-center px-4 sm:px-6 navbar">
+    <nav className="relative z-40 !bg-black/20 backdrop-blur-sm !py-6 min-h-12 flex items-center !px-4 sm:!px-6">
         {/* Desktop Layout */}
         <div className="hidden lg:flex items-center justify-between gap-4 w-full">
           {/* Left Section: App Title & Phase */}
           <div className="flex items-center gap-4">
-            <p className="text-lg font-bold text-white ">pomoradio</p>
-            <div className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${phaseInfo.color}`}>
-              {phaseInfo.title}
-            </div>
-            <div className="text-xs text-gray-400">
-              Session {pomodoro.currentCycle} • Completed: {pomodoro.completedSessions}
-            </div>
+            <p className="text-lg font-bold text-white !ml-12">pomoradio</p>
+            {pomodoroEnabled && (
+              <>
+                <div className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${phaseInfo.color}`}>
+                  {phaseInfo.title}
+                </div>
+                <div className="text-xs text-gray-400">
+                  Session {pomodoro.currentCycle} • Completed: {pomodoro.completedSessions}
+                </div>
+              </>
+            )}
           </div>
 
-          {/* Center Section: Timer & Controls */}
-          <div className="flex items-center gap-6">
-            {/* Timer Display */}
-            <div className="text-center">
-              <div className="text-2xl font-mono font-bold text-white">
-                {pomodoro.timeDisplay}
+          {/* Center Section: Timer & Controls - Only show when pomodoro is enabled */}
+          {pomodoroEnabled && (
+            <div className="flex items-center gap-6">
+              {/* Timer Display */}
+              <div className="text-center">
+                <div className="text-2xl font-mono font-bold text-white">
+                  {pomodoro.timeDisplay}
+                </div>
+              </div>
+              
+              {/* Timer Controls */}
+              <div className="flex items-center gap-3 px-4 py-2">
+                <button
+                  onClick={pomodoro.isRunning ? pomodoro.pause : pomodoro.start}
+                  className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-white font-medium text-sm transition-colors ${phaseInfo.color} ${phaseInfo.hoverColor}`}
+                >
+                  {pomodoro.isRunning ? <Pause size={16} /> : <Play size={16} />}
+                  {pomodoro.isRunning ? 'Pause' : 'Start'}
+                </button>
+                <button
+                  onClick={pomodoro.reset}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm transition-colors"
+                >
+                  <RotateCcw size={14} />
+                  Reset
+                </button>
+                <button
+                  onClick={pomodoro.skip}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm transition-colors"
+                >
+                  <SkipForward size={14} />
+                  Skip
+                </button>
               </div>
             </div>
-            
-            {/* Timer Controls */}
-            <div className="flex items-center gap-3 px-4 py-2">
-              <button
-                onClick={pomodoro.isRunning ? pomodoro.pause : pomodoro.start}
-                className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-white font-medium text-sm transition-colors ${phaseInfo.color} ${phaseInfo.hoverColor}`}
-              >
-                {pomodoro.isRunning ? <Pause size={16} /> : <Play size={16} />}
-                {pomodoro.isRunning ? 'Pause' : 'Start'}
-              </button>
-              <button
-                onClick={pomodoro.reset}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm transition-colors"
-              >
-                <RotateCcw size={14} />
-                Reset
-              </button>
-              <button
-                onClick={pomodoro.skip}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm transition-colors"
-              >
-                <SkipForward size={14} />
-                Skip
-              </button>
-            </div>
-          </div>
+          )}
 
           {/* Right Section: Radio Status & Volume */}
           <div className="flex items-center gap-4">
@@ -95,8 +102,6 @@ export function Navbar({ pomodoro }: NavbarProps) {
                     </div>
                   </div>
                 </div>
-                
-                
               </div>
             ) : (
               <div className="flex items-center gap-2 text-gray-400">
@@ -180,43 +185,49 @@ export function Navbar({ pomodoro }: NavbarProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <h1 className="text-base sm:text-lg font-bold text-white">Pomoradio</h1>
-              <div className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${phaseInfo.color}`}>
-                {phaseInfo.title}
-              </div>
+              {pomodoroEnabled && (
+                <div className={`px-2 py-1 rounded-full text-xs font-semibold text-white ${phaseInfo.color}`}>
+                  {phaseInfo.title}
+                </div>
+              )}
             </div>
-            <div className="text-center">
-              <div className="text-xl sm:text-2xl font-mono font-bold text-white">
-                {pomodoro.timeDisplay}
+            {pomodoroEnabled && (
+              <div className="text-center">
+                <div className="text-xl sm:text-2xl font-mono font-bold text-white">
+                  {pomodoro.timeDisplay}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Bottom Row: Controls, Radio Status, Volume */}
-          <div className="flex items-center justify-between gap-2">
-            {/* Controls */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              <button
-                onClick={pomodoro.isRunning ? pomodoro.pause : pomodoro.start}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-white font-medium text-sm transition-colors ${phaseInfo.color} ${phaseInfo.hoverColor}`}
-              >
-                {pomodoro.isRunning ? <Pause size={14} /> : <Play size={14} />}
-                <span className="hidden sm:inline">{pomodoro.isRunning ? 'Pause' : 'Start'}</span>
-              </button>
-              <button
-                onClick={pomodoro.reset}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm transition-colors"
-              >
-                <RotateCcw size={14} />
-                <span className="hidden sm:inline">Reset</span>
-              </button>
-              <button
-                onClick={pomodoro.skip}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm transition-colors"
-              >
-                <SkipForward size={14} />
-                <span className="hidden sm:inline">Skip</span>
-              </button>
-            </div>
+          <div className={`flex items-center gap-2 ${pomodoroEnabled ? 'justify-between' : 'justify-end'}`}>
+            {/* Controls - Only show when pomodoro is enabled */}
+            {pomodoroEnabled && (
+              <div className="flex items-center gap-2 sm:gap-3">
+                <button
+                  onClick={pomodoro.isRunning ? pomodoro.pause : pomodoro.start}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-white font-medium text-sm transition-colors ${phaseInfo.color} ${phaseInfo.hoverColor}`}
+                >
+                  {pomodoro.isRunning ? <Pause size={14} /> : <Play size={14} />}
+                  <span className="hidden sm:inline">{pomodoro.isRunning ? 'Pause' : 'Start'}</span>
+                </button>
+                <button
+                  onClick={pomodoro.reset}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm transition-colors"
+                >
+                  <RotateCcw size={14} />
+                  <span className="hidden sm:inline">Reset</span>
+                </button>
+                <button
+                  onClick={pomodoro.skip}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm transition-colors"
+                >
+                  <SkipForward size={14} />
+                  <span className="hidden sm:inline">Skip</span>
+                </button>
+              </div>
+            )}
 
             {/* Radio Status & Volume */}
             <div className="flex items-center gap-2 sm:gap-3">
