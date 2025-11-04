@@ -125,14 +125,14 @@ export function RadioGlobe({ onStationSelect, currentStation, flyToStationTrigge
       ? allStations.find(s => s.stationuuid === currentStation.stationuuid)
       : null;
 
-    // Define zoom thresholds and minimum distances
+    // Define zoom thresholds and minimum distances - more restrictive to reduce clutter
     const getZoomConfig = (alt: number) => {
-      if (alt > 3) return { minDistance: 8, maxStations: 50, priorityThreshold: 50000 }; // Very zoomed out
-      if (alt > 2) return { minDistance: 4, maxStations: 150, priorityThreshold: 20000 }; // Zoomed out
-      if (alt > 1.5) return { minDistance: 2, maxStations: 300, priorityThreshold: 5000 }; // Medium zoom
-      if (alt > 1) return { minDistance: 1, maxStations: 500, priorityThreshold: 1000 }; // Zoomed in
-      if (alt > 0.5) return { minDistance: 0.3, maxStations: 800, priorityThreshold: 0 }; // Close zoom
-      return { minDistance: 0, maxStations: Infinity, priorityThreshold: 0 }; // Very close - show ALL stations
+      if (alt > 3) return { minDistance: 12, maxStations: 30, priorityThreshold: 50000 }; // Very zoomed out - fewer stations
+      if (alt > 2) return { minDistance: 8, maxStations: 80, priorityThreshold: 20000 }; // Zoomed out - reduced
+      if (alt > 1.5) return { minDistance: 4, maxStations: 150, priorityThreshold: 5000 }; // Medium zoom - reduced
+      if (alt > 1) return { minDistance: 2, maxStations: 250, priorityThreshold: 1000 }; // Zoomed in - reduced
+      if (alt > 0.5) return { minDistance: 1, maxStations: 350, priorityThreshold: 0 }; // Close zoom - much more restrictive
+      return { minDistance: 0.5, maxStations: 400, priorityThreshold: 0 }; // Very close - still limit stations, don't show all
     };
 
     const config = getZoomConfig(altitude);
@@ -344,6 +344,10 @@ export function RadioGlobe({ onStationSelect, currentStation, flyToStationTrigge
     controls.enableDamping = true;
     controls.dampingFactor = 0.1;
     controls.autoRotateSpeed = -0.2; // Slower, more gentle rotation in opposite direction
+    
+    // Limit zoom in - prevent users from getting too close to the globe
+    controls.minDistance = 150; // Minimum distance from globe center (roughly altitude 0.4-0.5)
+    controls.maxDistance = 1000; // Optional: also limit zoom out if desired
     
     // Only auto-rotate if user hasn't interacted yet
     controls.autoRotate = autoRotate && !userHasInteracted;

@@ -133,7 +133,7 @@ async function generateStationsData() {
         
         // Filter stations with valid coordinates and add metadata
         const validStations = countryStations
-          .filter(station => station.geo_lat && station.geo_long && station.lastcheckok === 1)
+          // .filter(station => station.geo_lat && station.geo_long && station.lastcheckok === 1)
           .map(station => ({
             stationuuid: station.stationuuid,
             name: station.name,

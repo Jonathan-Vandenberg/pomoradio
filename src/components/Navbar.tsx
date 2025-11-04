@@ -29,7 +29,7 @@ export function Navbar({ pomodoro, pomodoroEnabled }: NavbarProps) {
   const phaseInfo = getPhaseDisplay();
 
   return (
-    <nav className="relative z-40 !bg-black/20 backdrop-blur-sm !py-6 min-h-12 flex items-center !px-4 sm:!px-6">
+    <nav className="relative z-40 !bg-black/20 backdrop-blur-sm !py-4 min-h-12 flex items-center !px-4 sm:!px-6">
         {/* Desktop Layout */}
         <div className="hidden lg:flex items-center justify-between gap-4 w-full">
           {/* Left Section: App Title & Phase */}
@@ -182,7 +182,7 @@ export function Navbar({ pomodoro, pomodoroEnabled }: NavbarProps) {
         {/* Mobile & Tablet Layout */}
         <div className="lg:hidden space-y-3 w-full flex flex-col justify-center py-2 px-0">
           {/* Top Row: App Title, Phase, Timer */}
-          <div className="flex items-center justify-between">
+          <div className={`flex items-center ${pomodoroEnabled ? 'justify-between' : 'justify-center'}`}>
             <div className="flex items-center gap-3">
               <h1 className="text-base sm:text-lg font-bold text-white">Pomoradio</h1>
               {pomodoroEnabled && (
@@ -201,7 +201,7 @@ export function Navbar({ pomodoro, pomodoroEnabled }: NavbarProps) {
           </div>
 
           {/* Bottom Row: Controls, Radio Status, Volume */}
-          <div className={`flex items-center gap-2 ${pomodoroEnabled ? 'justify-between' : 'justify-end'}`}>
+          <div className={`flex items-center gap-2 ${pomodoroEnabled ? 'justify-between' : 'justify-center'}`}>
             {/* Controls - Only show when pomodoro is enabled */}
             {pomodoroEnabled && (
               <div className="flex items-center gap-2 sm:gap-3">

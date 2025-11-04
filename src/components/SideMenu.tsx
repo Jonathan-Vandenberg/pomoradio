@@ -30,6 +30,11 @@ export function SideMenu({ pomodoroEnabled, onPomodoroToggle, pomodoro, onStatio
   const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [favoriteStations, setFavoriteStations] = useState<RadioStation[]>([]);
+  
+  // State for section dropdowns
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(
+    new Set() // Start with all sections closed
+  );
 
   // Load and group stations by country
   useEffect(() => {
@@ -113,6 +118,18 @@ export function SideMenu({ pomodoroEnabled, onPomodoroToggle, pomodoro, onStatio
     });
   };
 
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(section)) {
+        newSet.delete(section);
+      } else {
+        newSet.add(section);
+      }
+      return newSet;
+    });
+  };
+
   const handleStationClick = (station: RadioStation) => {
     onStationSelect(station);
     onFlyToStation(station);
@@ -131,18 +148,35 @@ export function SideMenu({ pomodoroEnabled, onPomodoroToggle, pomodoro, onStatio
           <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-80 bg-gray-900/95 backdrop-blur-xl border-gray-700 !p-6">
+      <SheetContent side="left" className="w-80 bg-gray-900/95 backdrop-blur-xl border-gray-700 !p-6 flex flex-col h-full">
         <SheetHeader className="space-y-4">
           <SheetTitle className="text-white text-xl font-bold">
-            Options
+            pomoradio
           </SheetTitle>
-          <SheetDescription className="text-gray-300">
-            Configure your focus settings
-          </SheetDescription>
+          {/* <SheetDescription className="text-gray-300">
+            radio tomato juice
+          </SheetDescription> */}
         </SheetHeader>
         
-        <div className="space-y-4 mt-8">
+        <div className="space-y-4 !mt-8 flex-1 flex flex-col overflow-hidden">
+          {/* Options Section Header */}
           <button
+            onClick={() => toggleSection('options')}
+            className="flex items-center gap-2 w-full !p-2 rounded-lg hover:bg-gray-800/50 transition-colors text-left !mb-4"
+          >
+            {expandedSections.has('options') ? (
+              <ChevronDown className="h-4 w-4 text-gray-400 flex-shrink-0" />
+            ) : (
+              <ChevronRight className="h-4 w-4 text-gray-400 flex-shrink-0" />
+            )}
+            <Timer className="h-5 w-5 text-gray-400" />
+            <span className="text-white font-semibold">Pomodoro Timer</span>
+          </button>
+          
+          {/* Options Section Content */}
+          {expandedSections.has('options') && (
+            <div className="!ml-6 !space-y-4">
+              <button
             onClick={() => {
               const newEnabled = !pomodoroEnabled;
               
@@ -155,7 +189,7 @@ export function SideMenu({ pomodoroEnabled, onPomodoroToggle, pomodoro, onStatio
               // Close the menu after toggling
               setTimeout(() => setIsOpen(false), 300);
             }}
-            className={`flex items-center gap-3 w-full p-3 rounded-lg transition-all duration-200 text-left ${
+            className={`flex items-center gap-3 w-full !p-3 rounded-lg transition-all duration-200 text-left ${
               pomodoroEnabled 
                 ? 'bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/50' 
                 : 'bg-gray-800/50 hover:bg-gray-800/70 border border-transparent'
@@ -173,10 +207,10 @@ export function SideMenu({ pomodoroEnabled, onPomodoroToggle, pomodoro, onStatio
           </button>
           
           {/* Status text */}
-          <div className="text-sm px-3 space-y-2 !py-4">
+          <div className="text-sm !px-3 !space-y-2 !pb-4 !pt-0">
             {pomodoroEnabled ? (
               <div className="space-y-1">
-                <div className="text-blue-400 font-medium">✓ Pomodoro timer is active</div>
+                {/* <div className="text-blue-400 font-medium">✓ Pomodoro timer is active</div> */}
                 <div className="text-gray-300">
                   <div className="flex justify-between">
                     <span>Phase:</span>
@@ -218,14 +252,27 @@ export function SideMenu({ pomodoroEnabled, onPomodoroToggle, pomodoro, onStatio
                 </div>
               </div>
             )}
-          </div>
-
-          {/* Currently Playing Station */}
-          <div className="border-t border-gray-700 !py-4">
-            <div className="flex items-center gap-2 !mb-4">
-              <Radio className="h-5 w-5 text-gray-400" />
-              <h3 className="text-white font-semibold">Now Playing</h3>
+              </div>
             </div>
+          )}
+
+          {/* Now Playing Section */}
+          <div className="border-t border-gray-700 !py-4">
+            <button
+              onClick={() => toggleSection('nowplaying')}
+              className="flex items-center gap-2 w-full !p-2 rounded-lg hover:bg-gray-800/50 transition-colors text-left"
+            >
+              {expandedSections.has('nowplaying') ? (
+                <ChevronDown className="h-4 w-4 text-gray-400 flex-shrink-0" />
+              ) : (
+                <ChevronRight className="h-4 w-4 text-gray-400 flex-shrink-0" />
+              )}
+              <Radio className="h-5 w-5 text-gray-400" />
+              <span className="text-white font-semibold">Now Playing</span>
+            </button>
+            
+            {expandedSections.has('nowplaying') && (
+              <div className="!ml-6">{/* Now Playing content will go here */}
             
             {pomodoro.audio.currentStation ? (
               <div className="!space-y-4">
@@ -311,30 +358,42 @@ export function SideMenu({ pomodoroEnabled, onPomodoroToggle, pomodoro, onStatio
                 </div>
               </div>
             ) : (
-              <div className="bg-gray-800/30 rounded-lg p-4 text-center">
+              <div className="bg-gray-800/30 rounded-lg !p-4 text-center !my-4">
                 <div className="flex items-center justify-center gap-2 text-gray-400 mb-2">
                   <Radio className="h-5 w-5" />
                   <span className="text-sm">No station selected</span>
                 </div>
                 <p className="text-xs text-gray-500">
-                  Select a radio station from the list below or click on the globe
+                  Select a radio station from the Radio Stations list below or click on a point on the globe
                 </p>
+              </div>
+            )}
               </div>
             )}
           </div>
 
           {/* Favorites Section */}
           <div className="border-t border-gray-700 !py-4">
-            <div className="flex items-center gap-2 !mb-4">
+            <button
+              onClick={() => toggleSection('favorites')}
+              className="flex items-center gap-2 w-full !p-2 rounded-lg hover:bg-gray-800/50 transition-colors text-left"
+            >
+              {expandedSections.has('favorites') ? (
+                <ChevronDown className="h-4 w-4 text-gray-400 flex-shrink-0" />
+              ) : (
+                <ChevronRight className="h-4 w-4 text-gray-400 flex-shrink-0" />
+              )}
               <Heart className="h-5 w-5 text-gray-400" />
-              <h3 className="text-white font-semibold">Favorites</h3>
+              <span className="text-white font-semibold">Favorites</span>
               <span className="text-gray-400 text-xs ml-auto">
                 ({favoriteStations.length})
               </span>
-            </div>
+            </button>
             
-            {favoriteStations.length > 0 ? (
-              <div className="!space-y-2 max-h-48 overflow-y-auto">
+            {expandedSections.has('favorites') && (
+              <div className="!ml-6">
+                {favoriteStations.length > 0 ? (
+              <div className="!space-y-2 overflow-y-auto" style={{maxHeight: 'min(40vh, 20rem)'}}>
                 {favoriteStations.map((station) => (
                   <div
                     key={station.stationuuid}
@@ -375,27 +434,38 @@ export function SideMenu({ pomodoroEnabled, onPomodoroToggle, pomodoro, onStatio
                 ))}
               </div>
             ) : (
-              <div className="bg-gray-800/30 rounded-lg p-4 text-center">
-                <Heart className="h-8 w-8 text-gray-600 mx-auto mb-2" />
+              <div className="bg-gray-800/30 rounded-lg !p-4 text-center !my-4">
                 <div className="text-gray-400 text-sm mb-1">No favorites yet</div>
                 <p className="text-xs text-gray-500">
                   Click the ♥ icon next to any station to add it to your favorites
                 </p>
               </div>
             )}
+              </div>
+            )}
           </div>
 
-          {/* Radio Stations by Country */}
-          <div className="border-t border-gray-700 !py-6">
-            <div className="flex items-center gap-2 !mb-4">
+          {/* Radio Stations Section */}
+          <div className="border-t border-gray-700 !py-6 flex-1 flex flex-col overflow-hidden">
+            <button
+              onClick={() => toggleSection('stations')}
+              className="flex items-center gap-2 w-full !p-2 rounded-lg hover:bg-gray-800/50 transition-colors text-left"
+            >
+              {expandedSections.has('stations') ? (
+                <ChevronDown className="h-4 w-4 text-gray-400 flex-shrink-0" />
+              ) : (
+                <ChevronRight className="h-4 w-4 text-gray-400 flex-shrink-0" />
+              )}
               <Globe className="h-5 w-5 text-gray-400" />
-              <h3 className="text-white font-semibold">Radio Stations</h3>
-            </div>
+              <span className="text-white font-semibold">Radio Stations</span>
+            </button>
             
-            {loading ? (
+            {expandedSections.has('stations') && (
+              <div className="!ml-6 flex-1 flex flex-col overflow-hidden">
+                {loading ? (
               <div className="text-gray-400 text-sm px-3">Loading stations...</div>
             ) : (
-              <div className="!space-y-2 max-h-96 overflow-y-auto">
+              <div className="!space-y-2 overflow-y-auto flex-1 min-h-0">
                 {Object.entries(countries)
                   .sort(([a], [b]) => a.localeCompare(b))
                   .map(([country, stations]) => {
@@ -407,7 +477,7 @@ export function SideMenu({ pomodoroEnabled, onPomodoroToggle, pomodoro, onStatio
                         {/* Country Header */}
                         <button
                           onClick={() => toggleCountry(country)}
-                          className="flex items-center !gap-2 w-full p-2 rounded-lg hover:bg-gray-800/50 transition-colors text-left"
+                          className="flex items-center gap-2 w-full !p-2 rounded-lg hover:bg-gray-800/50 transition-colors text-left"
                         >
                           {isExpanded ? (
                             <ChevronDown className="h-4 w-4 text-gray-400 flex-shrink-0" />
@@ -473,6 +543,8 @@ export function SideMenu({ pomodoroEnabled, onPomodoroToggle, pomodoro, onStatio
                       </div>
                     );
                   })}
+              </div>
+            )}
               </div>
             )}
           </div>
