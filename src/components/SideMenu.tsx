@@ -195,8 +195,7 @@ export function SideMenu({ pomodoroEnabled, onPomodoroToggle, pomodoro, onStatio
                 : 'bg-gray-800/50 hover:bg-gray-800/70 border border-transparent'
             }`}
           >
-            <Timer className={`h-5 w-5 transition-colors ${pomodoroEnabled ? 'text-blue-400' : 'text-gray-400'}`} />
-            <span className="text-white font-medium flex-1">Pomodoro Timer</span>
+            <span className="text-white font-medium flex-1">Enable</span>
             <div className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-all duration-200 ${
               pomodoroEnabled 
                 ? 'bg-blue-500 border-blue-500 scale-100' 
@@ -211,7 +210,7 @@ export function SideMenu({ pomodoroEnabled, onPomodoroToggle, pomodoro, onStatio
             {pomodoroEnabled ? (
               <div className="space-y-1">
                 {/* <div className="text-blue-400 font-medium">✓ Pomodoro timer is active</div> */}
-                <div className="text-gray-300">
+                {/* <div className="text-gray-300">
                   <div className="flex justify-between">
                     <span>Phase:</span>
                     <span className={`capitalize ${
@@ -242,7 +241,7 @@ export function SideMenu({ pomodoroEnabled, onPomodoroToggle, pomodoro, onStatio
                       {pomodoro.isRunning ? 'Running' : 'Paused'}
                     </span>
                   </div>
-                </div>
+                </div> */}
               </div>
             ) : (
               <div className="text-gray-400">
@@ -278,22 +277,15 @@ export function SideMenu({ pomodoroEnabled, onPomodoroToggle, pomodoro, onStatio
               <div className="!space-y-4">
                 {/* Station Info */}
                 <div className="bg-gray-800/50 rounded-lg !p-4 !space-y-3">
-                  <div className="flex items-center mb-3">
-                    <span className="text-3xl">
-                      {getCountryFlag(pomodoro.audio.currentStation.countrycode)}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-white font-medium truncate">
+                  {/* Country Row */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-3xl">
+                        {getCountryFlag(pomodoro.audio.currentStation.countrycode)}
+                      </span>
+                      <div className="text-white font-medium">
                         {pomodoro.audio.currentStation.country}
                       </div>
-                      <div className="text-sm text-gray-300 truncate">
-                        {pomodoro.audio.currentStation.name}
-                      </div>
-                      {pomodoro.audio.currentStation.codec && pomodoro.audio.currentStation.bitrate && (
-                        <div className="text-xs text-gray-400 !mt-1">
-                          {pomodoro.audio.currentStation.codec} • {pomodoro.audio.currentStation.bitrate}kbps
-                        </div>
-                      )}
                     </div>
                     
                     {/* Favorite Heart */}
@@ -310,6 +302,18 @@ export function SideMenu({ pomodoroEnabled, onPomodoroToggle, pomodoro, onStatio
                         }`}
                       />
                     </button>
+                  </div>
+                  
+                  {/* Station Info */}
+                  <div className="!space-y-2">
+                    <div className="text-sm text-gray-300">
+                      {pomodoro.audio.currentStation.name}
+                    </div>
+                    {pomodoro.audio.currentStation.codec && pomodoro.audio.currentStation.bitrate && (
+                      <div className="text-xs text-gray-400">
+                        {pomodoro.audio.currentStation.codec} • {pomodoro.audio.currentStation.bitrate}kbps
+                      </div>
+                    )}
                   </div>
                   
                   {/* Controls */}

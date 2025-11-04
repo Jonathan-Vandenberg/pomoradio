@@ -61,21 +61,21 @@ export function Navbar({ pomodoro, pomodoroEnabled }: NavbarProps) {
               <div className="flex items-center gap-3 px-4 py-2">
                 <button
                   onClick={pomodoro.isRunning ? pomodoro.pause : pomodoro.start}
-                  className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-white font-medium text-sm transition-colors ${phaseInfo.color} ${phaseInfo.hoverColor}`}
+                  className={`flex items-center gap-2 !px-6 !py-2.5 rounded-lg text-white font-medium text-sm transition-colors ${phaseInfo.color} ${phaseInfo.hoverColor}`}
                 >
                   {pomodoro.isRunning ? <Pause size={16} /> : <Play size={16} />}
                   {pomodoro.isRunning ? 'Pause' : 'Start'}
                 </button>
                 <button
                   onClick={pomodoro.reset}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm transition-colors"
+                  className="flex items-center gap-2 !px-4 !py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm transition-colors"
                 >
                   <RotateCcw size={14} />
                   Reset
                 </button>
                 <button
                   onClick={pomodoro.skip}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm transition-colors"
+                  className="flex items-center gap-2 !px-4 !py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm transition-colors"
                 >
                   <SkipForward size={14} />
                   Skip
@@ -89,15 +89,16 @@ export function Navbar({ pomodoro, pomodoroEnabled }: NavbarProps) {
             {/* Radio Status */}
             {pomodoro.audio.currentStation ? (
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-4xl">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">
                     {getCountryFlag(pomodoro.audio.currentStation.countrycode)}
                   </span>
-                  <div>
+                  <div className="flex items-center gap-2">
                     <div className="text-sm font-semibold text-white">
                       {pomodoro.audio.currentStation.country}
                     </div>
-                    <div className="text-xs text-gray-300 max-w-32">
+                    <div className="text-xs text-gray-400">•</div>
+                    <div className="text-xs text-gray-300">
                       {pomodoro.audio.currentStation.name}
                     </div>
                   </div>

@@ -69,6 +69,7 @@ export function PomodoroTimer() {
           onStationSelect={handleStationSelect}
           currentStation={pomodoro.audio.currentStation}
           flyToStationTrigger={flyToStationTrigger}
+          isInFocusMode={pomodoroEnabled && pomodoro.phase === 'work' && pomodoro.isRunning}
         />
       </div>
     </div>

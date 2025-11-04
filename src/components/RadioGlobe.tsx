@@ -23,9 +23,10 @@ interface RadioGlobeProps {
   onStationSelect?: (station: RadioStation) => void;
   currentStation?: RadioStation | null;
   flyToStationTrigger?: RadioStation | null;
+  isInFocusMode?: boolean;
 }
 
-export function RadioGlobe({ onStationSelect, currentStation, flyToStationTrigger }: RadioGlobeProps) {
+export function RadioGlobe({ onStationSelect, currentStation, flyToStationTrigger, isInFocusMode }: RadioGlobeProps) {
   const globeEl = useRef<any>(null);
   const [stations, setStations] = useState<StationMarker[]>([]);
   const [loading, setLoading] = useState(true);
@@ -557,16 +558,23 @@ export function RadioGlobe({ onStationSelect, currentStation, flyToStationTrigge
           // Change cursor on hover
           document.body.style.cursor = point ? 'pointer' : 'auto';
         }}
-        pointLabel={(d: any) => `
-          <div style="background: rgba(0,0,0,0.85); padding: 10px; border-radius: 6px; color: white; max-width: 220px; font-family: system-ui, sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
-            <div style="font-weight: bold; margin-bottom: 6px; font-size: 14px;">${d.name}</div>
-            <div style="font-size: 11px; color: #ccc; line-height: 1.4;">
-              📍 ${d.country}<br/>
-              🎵 ${d.codec} • ${d.bitrate}kbps<br/>
-              👍 ${d.votes.toLocaleString()} votes
-            </div>
-          </div>
-        `}
+        pointLabel={(d: any) => 
+          isInFocusMode 
+            ? `<div style="background: rgba(0,0,0,0.85); padding: 10px; border-radius: 6px; color: white; max-width: 220px; font-family: system-ui, sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+                <div style="font-weight: bold; margin-bottom: 6px; font-size: 14px; color:rgb(185, 38, 38);">Radio not available</div>
+                <div style="font-size: 11px; color: #ccc; line-height: 1.4;">
+                  Pause or disable the pomodoro timer to access radio stations
+                </div>
+              </div>`
+            : `<div style="background: rgba(0,0,0,0.85); padding: 10px; border-radius: 6px; color: white; max-width: 220px; font-family: system-ui, sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+                <div style="font-weight: bold; margin-bottom: 6px; font-size: 14px;">${d.name}</div>
+                <div style="font-size: 11px; color: #ccc; line-height: 1.4;">
+                  ${d.country}<br/>
+                  ${d.codec} • ${d.bitrate}kbps<br/>
+                  ${d.votes.toLocaleString()} votes
+                </div>
+              </div>`
+        }
         
         // Animation
         animateIn={true}

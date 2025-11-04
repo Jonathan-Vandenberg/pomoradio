@@ -42,8 +42,17 @@ export function usePomodoro(options: PomodoroOptions = {}) {
         const response = await fetch('/radio-stations.json');
         const data = await response.json();
         // All stations in the JSON are already filtered for lastcheckok === 1 during generation
-        stationsRef.current = data.stations.filter((s: RadioStation) => s.url_resolved);
-        console.log(`Loaded ${stationsRef.current.length} playable stations for pomodoro breaks out of ${data.totalStations} total.`);
+        // Filter for stations that have both a working URL and valid coordinates (for globe positioning)
+        stationsRef.current = data.stations.filter((s: any) => 
+          s.url_resolved && 
+          s.lat != null && 
+          s.lng != null &&
+          typeof s.lat === 'number' && 
+          typeof s.lng === 'number' &&
+          !isNaN(s.lat) &&
+          !isNaN(s.lng)
+        );
+        console.log(`Loaded ${stationsRef.current.length} playable stations with coordinates for pomodoro breaks out of ${data.totalStations} total.`);
       } catch (error) {
         console.error('Failed to load radio stations for pomodoro:', error);
       }
